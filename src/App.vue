@@ -1,49 +1,46 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue';
-import { useCounterStore } from './stores/counterStore';
-import UserList from './components/UserList.vue';
-import LoginForm from './components/LoginForm.vue';
-
-const counterStore = useCounterStore();
+// Imports for Pinia store or other components are no longer directly needed here
+// if they are handled by the views themselves.
+// We can keep HelloWorld if we want to display it on all pages, or remove it.
+// For now, let's create a simple layout with navigation and a view area.
+// import HelloWorld from './components/HelloWorld.vue'; // Optional
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div id="app-layout" class="flex flex-col min-h-screen">
+    <header class="bg-gray-800 text-white p-4 shadow-md">
+      <nav class="container mx-auto flex justify-between items-center">
+        <div class="text-xl font-semibold">My App</div>
+        <div class="space-x-4">
+          <router-link to="/login" class="hover:text-gray-300">Login</router-link>
+          <router-link to="/dashboard" class="hover:text-gray-300">Dashboard</router-link>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4">
+      <!-- HelloWorld can be placed here if it's a global component -->
+      <!-- <HelloWorld msg="Welcome!" /> -->
+      <router-view />
+    </main>
+
+    <footer class="bg-gray-700 text-white text-center p-3">
+      <p>&copy; {{ new Date().getFullYear() }} My Application</p>
+    </footer>
   </div>
-  <HelloWorld :msg="`Vite + Vue + Pinia (${counterStore.name})`" />
-
-  <h2>Pinia Counter</h2>
-  <p>Count: {{ counterStore.count }}</p>
-  <p>Double Count: {{ counterStore.doubleCount }}</p>
-  <p>Name with Count: {{ counterStore.nameWithCount }}</p>
-  <button @click="counterStore.increment()">Increment</button>
-  <button @click="counterStore.decrement()">Decrement</button>
-  <button @click="counterStore.reset()">Reset</button>
-  <button @click="counterStore.setCount(10)">Set to 10</button>
-  <button @click="counterStore.setName('Awesome Counter')">Change Name</button>
-
-  <UserList />
-
-  <LoginForm />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+/* Using Tailwind classes primarily, but some global styles or layout specifics can go here */
+/* For example, ensuring the app layout takes full height */
+#app-layout {
+  /* min-height: 100vh; */ /* Handled by flex flex-col min-h-screen */
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+/* Styling for router-link active class if needed, Vue Router adds 'router-link-active' and 'router-link-exact-active' */
+.router-link-active {
+  /* Example: Add a distinct style for the active link */
+  font-weight: bold;
+  /* color: #42b983; */ /* Vue green, or use a Tailwind color */
 }
 </style>

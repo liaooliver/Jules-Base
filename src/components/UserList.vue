@@ -20,7 +20,7 @@ interface NewUser {
 const fetchUsers = async (): Promise<User[]> => {
   console.log('Fetching users...');
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   // In a real app, this would be:
   // const response = await apiClient.get<User[]>('/users');
   // return response.data;
@@ -40,7 +40,7 @@ const fetchUsers = async (): Promise<User[]> => {
 const addUser = async (newUser: NewUser): Promise<User> => {
   console.log('Adding user:', newUser);
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   // In a real app, this would be:
   // const response = await apiClient.post<User>('/users', newUser);
   // return response.data;
@@ -54,14 +54,25 @@ const addUser = async (newUser: NewUser): Promise<User> => {
 const queryClient = useQueryClient();
 
 // Query for fetching users
-const { data: users, isLoading, isError, error, refetch } = useQuery<User[], Error>({
+const {
+  data: users,
+  isLoading,
+  isError,
+  error,
+  refetch,
+} = useQuery<User[], Error>({
   queryKey: ['users'],
   queryFn: fetchUsers,
   // staleTime: 1000 * 60 * 1 // 1 minute, can override default
 });
 
 // Mutation for adding a user
-const { mutate: createUser, isPending: isCreatingUser, isError: isCreateUserError, error: createUserError } = useMutation<User, Error, NewUser>({
+const {
+  mutate: createUser,
+  isPending: isCreatingUser,
+  isError: isCreateUserError,
+  error: createUserError,
+} = useMutation<User, Error, NewUser>({
   mutationFn: addUser,
   onSuccess: (newUser) => {
     console.log('User added successfully:', newUser);
@@ -76,7 +87,7 @@ const { mutate: createUser, isPending: isCreatingUser, isError: isCreateUserErro
   },
   onError: (err) => {
     console.error('Error adding user:', err.message);
-  }
+  },
 });
 
 // --- Form state for adding a new user ---
@@ -90,7 +101,6 @@ const handleAddUser = () => {
   }
   createUser({ name: newUserName.value, email: newUserEmail.value });
 };
-
 </script>
 
 <template>
@@ -98,28 +108,24 @@ const handleAddUser = () => {
     <h2>User List (Vue Query)</h2>
 
     <div v-if="isLoading" class="loading">Loading users...</div>
-    <div v-if="isError" class="error-message">
-      Error fetching users: {{ error?.message }}
-    </div>
+    <div v-if="isError" class="error-message">Error fetching users: {{ error?.message }}</div>
 
     <ul v-if="users && users.length > 0">
       <li v-for="user in users" :key="user.id" class="user-item">
         <strong>{{ user.name }}</strong> ({{ user.email }})
       </li>
     </ul>
-    <div v-if="users && users.length === 0 && !isLoading" class="no-users">
-      No users found.
-    </div>
+    <div v-if="users && users.length === 0 && !isLoading" class="no-users">No users found.</div>
 
-    <button @click="() => refetch()" :disabled="isLoading" class="refetch-button">
+    <button :disabled="isLoading" class="refetch-button" @click="() => refetch()">
       Refetch Users
     </button>
 
     <div class="add-user-form">
       <h3>Add New User</h3>
-      <input type="text" v-model="newUserName" placeholder="Name" :disabled="isCreatingUser" />
-      <input type="email" v-model="newUserEmail" placeholder="Email" :disabled="isCreatingUser" />
-      <button @click="handleAddUser" :disabled="isCreatingUser">
+      <input v-model="newUserName" type="text" placeholder="Name" :disabled="isCreatingUser" />
+      <input v-model="newUserEmail" type="email" placeholder="Email" :disabled="isCreatingUser" />
+      <button :disabled="isCreatingUser" @click="handleAddUser">
         {{ isCreatingUser ? 'Adding...' : 'Add User' }}
       </button>
       <div v-if="isCreateUserError" class="error-message">
@@ -137,7 +143,8 @@ const handleAddUser = () => {
   border-radius: 8px;
   margin-top: 20px;
 }
-.loading, .no-users {
+.loading,
+.no-users {
   color: #888;
   font-style: italic;
 }
@@ -152,7 +159,8 @@ const handleAddUser = () => {
   margin-bottom: 5px;
   border-radius: 4px;
 }
-.refetch-button, .add-user-form button {
+.refetch-button,
+.add-user-form button {
   margin-top: 10px;
   padding: 8px 15px;
   background-color: #007bff;
@@ -161,7 +169,8 @@ const handleAddUser = () => {
   border-radius: 4px;
   cursor: pointer;
 }
-.refetch-button:disabled, .add-user-form button:disabled {
+.refetch-button:disabled,
+.add-user-form button:disabled {
   background-color: #aaa;
 }
 .add-user-form {

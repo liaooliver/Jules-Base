@@ -16,7 +16,7 @@ const { handleSubmit, errors, isSubmitting, values, setFieldValue } = useForm<Lo
 const onSubmit = handleSubmit(async (formValues: LoginFormInputs) => {
   console.log('Form submitted with:', formValues);
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   alert(`Login successful for ${formValues.username} (Remember me: ${formValues.rememberMe})`);
   // In a real app, you would make an API call here
   // e.g., await authStore.login(formValues);
@@ -25,31 +25,41 @@ const onSubmit = handleSubmit(async (formValues: LoginFormInputs) => {
 // For demonstration: Log errors and values when they change
 // watch(errors, (newErrors) => console.log('Validation Errors:', newErrors));
 // watch(values, (newValues) => console.log('Form Values:', newValues));
-
 </script>
 
 <template>
   <div class="login-form-container">
     <h2>Login Form (VeeValidate + Zod)</h2>
-    <form @submit="onSubmit" class="form">
+    <form class="form" @submit="onSubmit">
       <div class="form-group">
         <label for="username">Username (Email)</label>
-        <Field name="username" type="email" id="username" class="form-control" placeholder="user@example.com" />
+        <Field
+          id="username"
+          name="username"
+          type="email"
+          class="form-control"
+          placeholder="user@example.com"
+        />
         <ErrorMessage name="username" class="error-message" />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <Field name="password" type="password" id="password" class="form-control" placeholder="******" />
+        <Field
+          id="password"
+          name="password"
+          type="password"
+          class="form-control"
+          placeholder="******"
+        />
         <ErrorMessage name="password" class="error-message" />
       </div>
 
       <div class="form-group form-check">
-        <Field name="rememberMe" type="checkbox" id="rememberMe" class="form-check-input" />
+        <Field id="rememberMe" name="rememberMe" type="checkbox" class="form-check-input" />
         <label for="rememberMe" class="form-check-label">Remember me</label>
       </div>
       <ErrorMessage name="rememberMe" class="error-message" />
-
 
       <button type="submit" class="submit-button" :disabled="isSubmitting">
         {{ isSubmitting ? 'Logging in...' : 'Login' }}
