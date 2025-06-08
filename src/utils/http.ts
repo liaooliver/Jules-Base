@@ -1,4 +1,8 @@
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+  type AxiosResponse,
+} from 'axios';
 
 // Create an Axios instance
 const apiClient: AxiosInstance = axios.create({

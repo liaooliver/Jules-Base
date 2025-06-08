@@ -1,30 +1,46 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
-    es2021: true,
     node: true,
+    es2021: true,
+    'vue/setup-compiler-macros': true, // Enables things like defineProps, defineEmits
   },
   extends: [
     'eslint:recommended',
-    'plugin:vue/vue3-recommended',
-    'plugin:@typescript-eslint/recommended',
+    'plugin:vue/vue3-recommended', // Use vue3-recommended for stricter rules
+    '@vue/eslint-config-typescript', // Corrected path for TypeScript specific rules for Vue
+    'eslint-config-prettier', // Turns off ESLint rules that might conflict with Prettier
   ],
-  parser: 'vue-eslint-parser',
+  parser: 'vue-eslint-parser', // The parser that allows ESLint to lint <template> and <script>
   parserOptions: {
-    parser: '@typescript-eslint/parser',
-    ecmaVersion: 'latest',
+    parser: '@typescript-eslint/parser', // Parser for <script> tags (TypeScript)
+    ecmaVersion: 2021,
     sourceType: 'module',
-    project: './tsconfig.json', // Ensure ESLint uses the project's tsconfig
-    extraFileExtensions: ['.vue']
   },
   plugins: [
-    'vue',
-    '@typescript-eslint',
+    '@typescript-eslint', // Not strictly necessary to list here if using @vue/eslint-config-typescript but doesn't hurt
+    'prettier', // Runs Prettier as an ESLint rule
   ],
   rules: {
-    '@typescript-eslint/no-unused-vars': ['warn'], // Warn for now, can be error later
-    'vue/multi-word-component-names': 'off', // Allow single-word component names like App.vue, HelloWorld.vue
+    'prettier/prettier': 'warn', // Show Prettier differences as warnings
+    // Add any project-specific ESLint rules here
+    // Example:
+    // 'vue/no-unused-vars': 'warn',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
   },
-  ignorePatterns: ['dist', 'node_modules', '*.d.ts', 'vite.config.ts'], // Ignore vite.config.ts for now
+  overrides: [
+    {
+      files: ['*.vue'],
+      rules: {
+        // Specific rules for .vue files if needed
+      },
+    },
+    {
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
+      env: {
+        jest: true, // or mocha, etc.
+      },
+    },
+  ],
 };

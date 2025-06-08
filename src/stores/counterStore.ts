@@ -29,6 +29,6 @@ export const useCounterStore = defineStore('counter', {
     },
     setName(newName: string) {
       this.name = newName;
-    }
+    },
   },
 });
