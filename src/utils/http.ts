@@ -3,6 +3,7 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
+import { useAuthStore } from '../stores/authStore'; // Import the auth store
 
 // Create an Axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -16,12 +17,15 @@ const apiClient: AxiosInstance = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Placeholder for adding authentication token
-    // const token = localStorage.getItem('authToken');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
-    console.log('Request Interceptor:', config); // For demonstration
+    // Access the store inside the interceptor
+    // This ensures Pinia is initialized before the store is used.
+    const authStore = useAuthStore();
+    const token = authStore.getToken; // Accessing the getter
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    // console.log('Request Interceptor with token:', config.headers.Authorization); // For demonstration
     return config;
   },
   (error) => {

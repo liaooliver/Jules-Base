@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import { ref } from 'vue'; // Import ref for simulated auth state
 import LoginView from '@/views/LoginView.vue';
 import DashboardView from '@/views/DashboardView.vue';
-
-// Simulated authentication status
-// In a real app, this would come from a store (e.g., Pinia) or auth service.
-export const isAuthenticated = ref(false); // Export for potential use in LoginView to simulate login
+import UnauthorizedView from '../views/UnauthorizedView.vue'; // Import UnauthorizedView
+import { useAuthStore } from '../stores/authStore'; // Import the auth store
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,7 +14,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
-    meta: { requiresAuth: true }, // Add meta field to identify protected routes
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_admin'] }, // Updated meta
+  },
+  {
+    path: '/unauthorized', // Added unauthorized route
+    name: 'Unauthorized',
+    component: UnauthorizedView,
   },
   {
     path: '/',
@@ -32,16 +34,47 @@ const router = createRouter({
 
 // Global Before Guard
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // This route requires auth, check if logged in
-    // If not, redirect to login page.
-    if (!isAuthenticated.value) {
-      next({ name: 'Login' }); // Redirect to login page
+  const authStore = useAuthStore();
+  const isAuthenticated = authStore.getIsAuthenticated;
+  const currentUserRole = authStore.getRole;
+
+  const requiresAuth = to.meta.requiresAuth as boolean | undefined;
+  const requiredRoles = to.meta.roles as string[] | undefined;
+
+  if (requiresAuth) {
+    if (!isAuthenticated) {
+      next({ name: 'Login' });
     } else {
-      next(); // Proceed to route
+      // User is authenticated, check roles if required
+      if (requiredRoles && requiredRoles.length > 0) {
+        if (!currentUserRole) {
+          // Should not happen if authenticated, but as a safeguard
+          next({ name: 'Unauthorized' });
+          return;
+        }
+
+        // Role hierarchy logic
+        if (requiredRoles.includes(currentUserRole)) {
+          next(); // User's role is directly permitted
+        } else if (currentUserRole === 'super_admin' && (requiredRoles.includes('admin') || requiredRoles.includes('user'))) {
+          next(); // Super_admin can access admin and user roles
+        } else if (currentUserRole === 'admin' && requiredRoles.includes('user')) {
+          next(); // Admin can access user roles
+        } else {
+          next({ name: 'Unauthorized' }); // Role not sufficient
+        }
+      } else {
+        next(); // Route requires auth but no specific roles, so allow
+      }
     }
   } else {
-    next(); // Does not require auth, make sure to always call next()!
+    // Route does not require auth
+    // If user is logged in and tries to access login page, redirect to dashboard
+    if (to.name === 'Login' && isAuthenticated) {
+      next({ name: 'Dashboard'});
+    } else {
+      next();
+    }
   }
 });
 
