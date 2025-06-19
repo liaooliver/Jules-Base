@@ -14,6 +14,7 @@
         <div class="space-x-4">
           <router-link to="/login" class="hover:text-gray-300">Login</router-link>
           <router-link to="/dashboard" class="hover:text-gray-300">Dashboard</router-link>
+          <router-link to="/i18n" class="hover:text-gray-300">I18n Demo</router-link>
         </div>
       </nav>
     </header>

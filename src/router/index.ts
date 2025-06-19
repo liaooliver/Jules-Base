@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { ref } from 'vue'; // Import ref for simulated auth state
 import LoginView from '@/views/LoginView.vue';
 import DashboardView from '@/views/DashboardView.vue';
+import I18nView from '@/views/I18nView.vue'; // Import the new view
 
 // Simulated authentication status
 // In a real app, this would come from a store (e.g., Pinia) or auth service.
@@ -18,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Dashboard',
     component: DashboardView,
     meta: { requiresAuth: true }, // Add meta field to identify protected routes
+  },
+  {
+    path: '/i18n', // New route for i18n demonstration
+    name: 'I18nDemo',
+    component: I18nView,
   },
   {
     path: '/',
