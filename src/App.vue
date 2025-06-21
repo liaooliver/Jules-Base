@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { locale } = useI18n();
+
 // Imports for Pinia store or other components are no longer directly needed here
 // if they are handled by the views themselves.
 // We can keep HelloWorld if we want to display it on all pages, or remove it.
@@ -13,7 +16,8 @@
         <div class="text-xl font-semibold">My App</div>
         <div class="space-x-4">
           <router-link to="/login" class="hover:text-gray-300">Login</router-link>
-          <router-link to="/dashboard" class="hover:text-gray-300">Dashboard</router-link>
+          <router-link :to="`/${locale}/dashboard`" class="hover:text-gray-300">Dashboard</router-link>
+          <router-link :to="`/${locale}/i18n`" class="hover:text-gray-300">I18n Demo</router-link>
         </div>
       </nav>
     </header>
